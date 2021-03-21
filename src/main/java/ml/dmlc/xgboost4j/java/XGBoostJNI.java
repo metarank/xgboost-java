@@ -15,10 +15,10 @@
  */
 package ml.dmlc.xgboost4j.java;
 
-import java.nio.ByteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.nio.ByteBuffer;
 
 /**
  * xgboost JNI functions
@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  * @author hzx
  */
 class XGBoostJNI {
-  private static final Log logger = LogFactory.getLog(DMatrix.class);
+  private static final Logger logger = LoggerFactory.getLogger(Booster.class);
 
   static {
     try {

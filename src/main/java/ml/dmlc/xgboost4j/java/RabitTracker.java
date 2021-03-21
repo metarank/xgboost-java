@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Java implementation of the Rabit tracker to coordinate distributed workers.
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class RabitTracker implements IRabitTracker {
   // Maybe per tracker logger?
-  private static final Log logger = LogFactory.getLog(RabitTracker.class);
+  private static final Logger logger = LoggerFactory.getLogger(Booster.class);
   // tracker python file.
   private static String tracker_py = null;
   private static TrackerProperties trackerProperties = TrackerProperties.getInstance();
@@ -38,8 +38,7 @@ public class RabitTracker implements IRabitTracker {
     try {
       initTrackerPy();
     } catch (IOException ex) {
-      logger.error("load tracker library failed.");
-      logger.error(ex);
+      logger.error("load tracker library failed.", ex);
     }
   }
 
@@ -49,7 +48,7 @@ public class RabitTracker implements IRabitTracker {
   private class TrackerProcessLogger implements Runnable {
     public void run() {
 
-      Log trackerProcessLogger = LogFactory.getLog(TrackerProcessLogger.class);
+      Logger trackerProcessLogger = LoggerFactory.getLogger(TrackerProcessLogger.class);
       BufferedReader reader = new BufferedReader(new InputStreamReader(
               trackerProcess.get().getErrorStream()));
       String line;
@@ -92,7 +91,7 @@ public class RabitTracker implements IRabitTracker {
     try {
       Thread.sleep(5000L);
     } catch (InterruptedException ex) {
-      logger.error(ex);
+      logger.error("error",ex);
     } finally {
       trackerProcess.get().destroy();
     }

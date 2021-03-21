@@ -4,14 +4,14 @@ import java.io.*;
 import java.net.URL;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TrackerProperties {
   private static String PROPERTIES_FILENAME = "xgboost-tracker.properties";
   private static String HOST_IP = "host-ip";
 
-  private static final Log logger = LogFactory.getLog(TrackerProperties.class);
+  private static final Logger logger = LoggerFactory.getLogger(Booster.class);
   private static TrackerProperties instance = new TrackerProperties();
 
   private Properties properties;

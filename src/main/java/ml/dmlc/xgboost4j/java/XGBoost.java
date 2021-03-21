@@ -21,10 +21,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * trainer for xgboost
@@ -32,7 +32,7 @@ import org.apache.hadoop.fs.Path;
  * @author hzx
  */
 public class XGBoost {
-  private static final Log logger = LogFactory.getLog(XGBoost.class);
+  private static final Logger logger = LoggerFactory.getLogger(Booster.class);
 
   /**
    * load model from modelPath
