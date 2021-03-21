@@ -7,7 +7,11 @@
 ### Main differences
 
 * no Scala support: original bindings depend on spark & flink, which cannot be used yet with Scala 2.13.
-* no extra dependcies: akka-actor, rabit
+* simplified dependencies: 
+  * akka-actor: as there is no scala support
+  * kryo: as it uses an ancient version of kryo which conflicts with 5.x
+  * commons-logging replaced with more typical slf4j-api
+  * optional hadoop dependency is now 2.10.x instead of 2.7.x
 
 # License
 
