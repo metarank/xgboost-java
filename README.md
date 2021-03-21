@@ -12,7 +12,19 @@
   * kryo: as it uses an ancient version of kryo which conflicts with 5.x
   * commons-logging replaced with more typical slf4j-api
   * optional hadoop dependency is now 2.10.x instead of 2.7.x
+    
 
-# License
+### Usage
+
+For maven, use the following snippet:
+```xml
+<dependency>
+  <groupId>io.github.metarank</groupId>
+  <artifactId>xgboost-java</artifactId>
+  <version>1.3.3-2</version>
+</dependency>
+```
+
+### License
 
 This project is released under the Apache 2.0 license, as specified in the LICENSE file.
