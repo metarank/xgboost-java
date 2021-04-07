@@ -4,7 +4,7 @@ crossPaths := false
 
 autoScalaLibrary := false
 
-version := "1.3.3-2"
+version := "1.3.3-3"
 
 sonatypeProfileName := "io.github.metarank"
 
