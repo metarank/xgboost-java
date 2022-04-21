@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class DMatrixTest {
 
+
   @Test
   public void testCreateFromFile() throws XGBoostError {
     //create DMatrix from file
@@ -163,7 +164,7 @@ public class DMatrixTest {
       label0[i] = random.nextFloat();
     }
 
-    DMatrix dmat0 = new DMatrix(data0, nrow, ncol);
+    DMatrix dmat0 = new DMatrix(data0, nrow, ncol, Float.NaN);
     dmat0.setLabel(label0);
 
     //check
@@ -232,7 +233,7 @@ public class DMatrixTest {
         label0[i] = random.nextFloat();
       }
 
-      dmat0 = new DMatrix(data0);
+      dmat0 = new DMatrix(data0, Float.NaN);
       dmat0.setLabel(label0);
 
       //check
@@ -269,7 +270,7 @@ public class DMatrixTest {
         for (int j = 0; j < data0.ncol; j++)
           data0.set(i, j, data[i][j]);
 
-      trainMat = new DMatrix(data0);
+      trainMat = new DMatrix(data0, Float.NaN);
       trainMat.setLabel(new float[]{1f, 2f, 3f});
 
       HashMap<String, Object> params = new HashMap<>();
@@ -289,7 +290,7 @@ public class DMatrixTest {
       // (3,1) -> 2
       // (2,3) -> 3
       for (int i = 0; i < 3; i++) {
-        float[][] preds = booster.predict(new DMatrix(data[i], 1, 2));
+        float[][] preds = booster.predict(new DMatrix(data[i], 1, 2, Float.NaN));
         assertEquals(1, preds.length);
         assertArrayEquals(new float[]{(float) (i + 1)}, preds[0], 1e-2f);
       }

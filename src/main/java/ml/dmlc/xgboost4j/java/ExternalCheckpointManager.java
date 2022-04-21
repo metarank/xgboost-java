@@ -6,14 +6,14 @@ import java.io.OutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExternalCheckpointManager {
 
-  private static final Logger logger = LoggerFactory.getLogger(Booster.class);
+  private Log logger = LogFactory.getLog("ExternalCheckpointManager");
   private String modelSuffix = ".model";
   private Path checkpointPath;
   private FileSystem fs;

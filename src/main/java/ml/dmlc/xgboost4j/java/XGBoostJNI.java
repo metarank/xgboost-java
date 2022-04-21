@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2014 by Contributors
+ Copyright (c) 2014-2022 by Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package ml.dmlc.xgboost4j.java;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.nio.ByteBuffer;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * xgboost JNI functions
@@ -27,7 +27,7 @@ import java.nio.ByteBuffer;
  * @author hzx
  */
 class XGBoostJNI {
-  private static final Logger logger = LoggerFactory.getLogger(Booster.class);
+  private static final Log logger = LogFactory.getLog(DMatrix.class);
 
   static {
     try {
@@ -104,7 +104,7 @@ class XGBoostJNI {
 
   public final static native int XGBoosterLoadModelFromBuffer(long handle, byte[] bytes);
 
-  public final static native int XGBoosterGetModelRaw(long handle, byte[][] out_bytes);
+  public final static native int XGBoosterSaveModelToBuffer(long handle, String format, byte[][] out_bytes);
 
   public final static native int XGBoosterDumpModelEx(long handle, String fmap, int with_stats,
                                                       String format, String[][] out_strings);
@@ -131,4 +131,13 @@ class XGBoostJNI {
   // This JNI function does not support the callback function for data preparation yet.
   final static native int RabitAllreduce(ByteBuffer sendrecvbuf, int count,
                                                 int enum_dtype, int enum_op);
+
+  public final static native int XGDMatrixSetInfoFromInterface(
+    long handle, String field, String json);
+
+  public final static native int XGDeviceQuantileDMatrixCreateFromCallback(
+    java.util.Iterator<ColumnBatch> iter, float missing, int nthread, int maxBin, long[] out);
+
+  public final static native int XGDMatrixCreateFromArrayInterfaceColumns(
+    String featureJson, float missing, int nthread, long[] out);
 }

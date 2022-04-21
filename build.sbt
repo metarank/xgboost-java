@@ -4,7 +4,7 @@ crossPaths := false
 
 autoScalaLibrary := false
 
-version := "1.3.3-3"
+version := "1.6.0-1"
 
 sonatypeProfileName := "io.github.metarank"
 
@@ -30,8 +30,9 @@ developers := List(
 scalacOptions ++= Seq("-feature", "-deprecation")
 
 libraryDependencies ++= Seq(
-  "junit"             % "junit"         % "4.13.1" % "test",
-  "org.slf4j"         % "slf4j-api"     % "1.7.30",
-  "org.apache.hadoop" % "hadoop-hdfs"   % "2.10.1" % "provided",
-  "org.apache.hadoop" % "hadoop-common" % "2.10.1" % "provided"
+  "junit"             % "junit"           % "4.13.2" % "test",
+  "com.github.sbt"    % "junit-interface" % "0.13.2" % Test,
+  "org.slf4j"         % "slf4j-api"       % "1.7.36",
+  "org.apache.hadoop" % "hadoop-hdfs"     % "2.10.1" % "provided",
+  "org.apache.hadoop" % "hadoop-common"   % "2.10.1" % "provided"
 )
