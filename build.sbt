@@ -4,7 +4,7 @@ crossPaths := false
 
 autoScalaLibrary := false
 
-version := "1.6.1-1"
+version := "1.6.1-2-M1"
 
 //javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 
