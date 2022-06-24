@@ -8,7 +8,8 @@
 
 * depends only on slf4j-api
 * no Scala support: original bindings depend on spark & flink, which cannot be used yet with Scala 2.13/3.x.
-* no kryo support 
+* no kryo support
+* support for Windows x86_64, Linux x86_64, Mac x86_64, Mac aarch64
 
 ### Usage
 
