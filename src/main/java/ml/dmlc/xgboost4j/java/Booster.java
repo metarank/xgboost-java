@@ -23,13 +23,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoSerializable;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
  * Booster for xgboost, this is a model API that support interactive build of a XGBoost Model
  */
-public class Booster implements Serializable {
+public class Booster implements Serializable, KryoSerializable {
+  public static final String DEFAULT_FORMAT = "deprecated";
   private static final Log logger = LogFactory.getLog(Booster.class);
   // handle to the booster.
   private long handle = 0;
@@ -387,7 +392,22 @@ public class Booster implements Serializable {
    * @param out The output stream
    */
   public void saveModel(OutputStream out) throws XGBoostError, IOException {
-    out.write(this.toByteArray());
+    saveModel(out, DEFAULT_FORMAT);
+  }
+
+  /**
+   * Save the model to file opened as output stream.
+   * The model format is compatible with other xgboost bindings.
+   * The output stream can only save one xgboost model.
+   * This function will close the OutputStream after the save.
+   *
+   * @param out The output stream
+   * @param format The model format (ubj, json, deprecated)
+   * @throws XGBoostError
+   * @throws IOException
+   */
+  public void saveModel(OutputStream out, String format) throws XGBoostError, IOException {
+    out.write(this.toByteArray(format));
     out.close();
   }
 
@@ -639,7 +659,7 @@ public class Booster implements Serializable {
    * @throws XGBoostError native error
    */
   public byte[] toByteArray() throws XGBoostError {
-    return this.toByteArray("deprecated");
+    return this.toByteArray(DEFAULT_FORMAT);
   }
 
   /**
@@ -754,6 +774,33 @@ public class Booster implements Serializable {
     if (handle != 0L) {
       XGBoostJNI.XGBoosterFree(handle);
       handle = 0;
+    }
+  }
+
+  @Override
+  public void write(Kryo kryo, Output output) {
+    try {
+      byte[] serObj = this.toByteArray();
+      int serObjSize = serObj.length;
+      output.writeInt(serObjSize);
+      output.writeInt(version);
+      output.write(serObj);
+    } catch (XGBoostError ex) {
+      logger.error(ex.getMessage(), ex);
+    }
+  }
+
+  @Override
+  public void read(Kryo kryo, Input input) {
+    try {
+      this.init(null);
+      int serObjSize = input.readInt();
+      this.version = input.readInt();
+      byte[] bytes = new byte[serObjSize];
+      input.readBytes(bytes);
+      XGBoostJNI.checkCall(XGBoostJNI.XGBoosterLoadModelFromBuffer(this.handle, bytes));
+    } catch (XGBoostError ex) {
+      logger.error(ex.getMessage(), ex);
     }
   }
 }
