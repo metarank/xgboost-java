@@ -9,7 +9,7 @@
 * depends only on slf4j-api
 * no Scala support: original bindings depend on spark & flink, which cannot be used yet with Scala 2.13/3.x.
 * no kryo support
-* support for Windows x86_64, Linux x86_64, Mac x86_64, Mac aarch64
+* support for Windows x86_64, Linux x86_64/aarch64, Mac x86_64, Mac aarch64
 
 ### Usage
 
@@ -18,7 +18,7 @@ For maven, use the following snippet:
 <dependency>
   <groupId>io.github.metarank</groupId>
   <artifactId>xgboost-java</artifactId>
-  <version>1.6.0-1</version>
+  <version>1.7.1-1</version>
 </dependency>
 ```
 
