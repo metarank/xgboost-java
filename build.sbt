@@ -4,9 +4,9 @@ crossPaths := false
 
 autoScalaLibrary := false
 
-version := "1.6.1-2"
+version := "1.7.1-1"
 
-//javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 
 sonatypeProfileName := "io.github.metarank"
 
