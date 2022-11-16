@@ -6,7 +6,7 @@ autoScalaLibrary := false
 
 version := "1.7.1-1"
 
-javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
+//javacOptions ++= Seq("-release", "8")
 
 sonatypeProfileName := "io.github.metarank"
 
