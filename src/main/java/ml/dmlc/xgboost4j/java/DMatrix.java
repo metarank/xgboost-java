@@ -15,9 +15,6 @@
  */
 package ml.dmlc.xgboost4j.java;
 
-import java.util.Iterator;
-
-import ml.dmlc.xgboost4j.LabeledPoint;
 import ml.dmlc.xgboost4j.java.util.BigDenseMatrix;
 
 /**
@@ -34,25 +31,6 @@ public class DMatrix {
   public static enum SparseType {
     CSR,
     CSC;
-  }
-
-  /**
-   * Create DMatrix from iterator.
-   *
-   * @param iter The data iterator of mini batch to provide the data.
-   * @param cacheInfo Cache path information, used for external memory setting, can be null.
-   * @throws XGBoostError
-   */
-  public DMatrix(Iterator<LabeledPoint> iter, String cacheInfo) throws XGBoostError {
-    if (iter == null) {
-      throw new NullPointerException("iter: null");
-    }
-    // 32k as batch size
-    int batchSize = 32 << 10;
-    Iterator<DataBatch> batchIter = new DataBatch.BatchIterator(iter, batchSize);
-    long[] out = new long[1];
-    XGBoostJNI.checkCall(XGBoostJNI.XGDMatrixCreateFromDataIter(batchIter, cacheInfo, out));
-    handle = out[0];
   }
 
   /**
