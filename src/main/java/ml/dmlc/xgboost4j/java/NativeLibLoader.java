@@ -164,8 +164,13 @@ class NativeLibLoader {
       Arch arch = Arch.detectArch();
       for (String libName : libNames) {
         try {
-          String libraryPathInJar = getLibraryPathFor(os, arch, libName);
-          loadLibraryFromJar(libraryPathInJar);
+          String nativeOverride = System.getenv("XGBOOST_NATIVE_LIB");
+          if (nativeOverride != null) {
+            System.load(nativeOverride);
+          } else {
+            String libraryPathInJar = getLibraryPathFor(os, arch, libName);
+            loadLibraryFromJar(libraryPathInJar);
+          }
         } catch (UnsatisfiedLinkError ule) {
           String failureMessageIncludingOpenMPHint = "Failed to load " + libName + " " +
               "due to missing native dependencies for " +
