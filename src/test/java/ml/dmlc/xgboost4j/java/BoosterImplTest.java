@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2014-2022 by Contributors
+ Copyright (c) 2014-2023 by Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,23 +15,27 @@
  */
 package ml.dmlc.xgboost4j.java;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import junit.framework.TestCase;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.*;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.fail;
+
 /**
- * test cases for Booster
+ * test cases for Booster Inplace Predict
  *
- * @author hzx
+ * @author hzx and Sovrn
  */
 public class BoosterImplTest {
-  private String train_uri = "src/test/resources/agaricus.txt.train?indexing_mode=1";
-  private String test_uri = "src/test/resources/agaricus.txt.test?indexing_mode=1";
+  private String train_uri = "src/test/resources/agaricus.txt.train?indexing_mode=1&format=libsvm";
+  private String test_uri = "src/test/resources/agaricus.txt.test?indexing_mode=1&format=libsvm";
 
   public static class EvalError implements IEvaluation {
     @Override
@@ -102,6 +106,15 @@ public class BoosterImplTest {
     TestCase.assertTrue(eval.eval(predicts, testMat) < 0.1f);
   }
 
+  private float[] generateRandomDataSet(int size) {
+    float[] newSet = new float[size];
+    Random random = new Random();
+    for(int i = 0; i < size; i++) {
+      newSet[i] = random.nextFloat();
+    }
+    return newSet;
+  }
+
   @Test
   public void saveLoadModelWithPath() throws XGBoostError, IOException {
     DMatrix trainMat = new DMatrix(this.train_uri);
@@ -113,6 +126,39 @@ public class BoosterImplTest {
     File temp = File.createTempFile("temp", "model");
     temp.deleteOnExit();
     booster.saveModel(temp.getAbsolutePath());
+
+    Booster bst2 = XGBoost.loadModel(temp.getAbsolutePath());
+    assert (Arrays.equals(bst2.toByteArray("ubj"), booster.toByteArray("ubj")));
+    assert (Arrays.equals(bst2.toByteArray("json"), booster.toByteArray("json")));
+    assert (Arrays.equals(bst2.toByteArray("deprecated"), booster.toByteArray("deprecated")));
+    float[][] predicts2 = bst2.predict(testMat, true, 0);
+    TestCase.assertTrue(eval.eval(predicts2, testMat) < 0.1f);
+  }
+
+  @Test
+  public void saveLoadModelWithFeaturesWithPath() throws XGBoostError, IOException {
+    DMatrix trainMat = new DMatrix(this.train_uri);
+    DMatrix testMat = new DMatrix(this.test_uri);
+    IEvaluation eval = new EvalError();
+
+    String[] featureNames = new String[126];
+    String[] featureTypes = new String[126];
+    for(int i = 0; i < 126; i++) {
+      featureNames[i] = "test_feature_name_" + i;
+      featureTypes[i] = "q";
+    }
+    trainMat.setFeatureNames(featureNames);
+    testMat.setFeatureNames(featureNames);
+    trainMat.setFeatureTypes(featureTypes);
+    testMat.setFeatureTypes(featureTypes);
+
+    Booster booster = trainBooster(trainMat, testMat);
+    // save and load, only json format save and load feature_name and feature_type
+    File temp = File.createTempFile("temp", ".json");
+    temp.deleteOnExit();
+    booster.saveModel(temp.getAbsolutePath());
+
+    String modelString = new String(booster.toByteArray("json"));
 
     Booster bst2 = XGBoost.loadModel(temp.getAbsolutePath());
     assert (Arrays.equals(bst2.toByteArray("ubj"), booster.toByteArray("ubj")));
@@ -634,14 +680,12 @@ public class BoosterImplTest {
     float tempBoosterError = eval.eval(tempBooster.predict(testMat, true, 0), testMat);
 
     // Save tempBooster to bytestream and load back
-    int prevVersion = tempBooster.getVersion();
     ByteArrayInputStream in = new ByteArrayInputStream(tempBooster.toByteArray());
     tempBooster = XGBoost.loadModel(in);
     in.close();
-    tempBooster.setVersion(prevVersion);
 
     // Continue training using tempBooster
-    round = 4;
+    round = 2;
     Booster booster2 = XGBoost.train(trainMat, paramMap, round, watches, null, null, null, 0, tempBooster);
     float booster2error = eval.eval(booster2.predict(testMat, true, 0), testMat);
     TestCase.assertTrue(booster1error == booster2error);
