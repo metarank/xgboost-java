@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2014-2022 by Contributors
+ Copyright (c) 2014-2023 by Contributors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -53,11 +53,15 @@ class XGBoostJNI {
 
   public final static native int XGDMatrixCreateFromFile(String fname, int silent, long[] out);
 
-  public final static native int XGDMatrixCreateFromCSREx(long[] indptr, int[] indices, float[] data,
-                                                        int shapeParam, long[] out);
+  public final static native int XGDMatrixCreateFromCSR(long[] indptr, int[] indices,
+                                                        float[] data, int shapeParam,
+                                                        float missing, int nthread,
+                                                        long[] out);
 
-  public final static native int XGDMatrixCreateFromCSCEx(long[] colptr, int[] indices, float[] data,
-                                                          int shapeParam, long[] out);
+  public final static native int XGDMatrixCreateFromCSC(long[] colptr, int[] indices,
+                                                        float[] data, int shapeParam,
+                                                        float missing, int nthread,
+                                                        long[] out);
 
   public final static native int XGDMatrixCreateFromMat(float[] data, int nrow, int ncol,
                                                         float missing, long[] out);
@@ -93,6 +97,7 @@ class XGBoostJNI {
                                                             long[] outLength, String[][] outValues);
 
   public final static native int XGDMatrixNumRow(long handle, long[] row);
+  public final static native int XGDMatrixNumNonMissing(long handle, long[] nonMissings);
 
   public final static native int XGBoosterCreate(long[] handles, long[] out);
 
@@ -146,10 +151,18 @@ class XGBoostJNI {
   public final static native int XGDMatrixSetInfoFromInterface(
     long handle, String field, String json);
 
+  @Deprecated
   public final static native int XGDeviceQuantileDMatrixCreateFromCallback(
     java.util.Iterator<ColumnBatch> iter, float missing, int nthread, int maxBin, long[] out);
 
+  public final static native int XGQuantileDMatrixCreateFromCallback(
+    java.util.Iterator<ColumnBatch> iter, java.util.Iterator<ColumnBatch> ref, String config, long[] out);
+
   public final static native int XGDMatrixCreateFromArrayInterfaceColumns(
     String featureJson, float missing, int nthread, long[] out);
+
+  public final static native int XGBoosterSetStrFeatureInfo(long handle, String field, String[] features);
+
+  public final static native int XGBoosterGetStrFeatureInfo(long handle, String field, String[] out);
 
 }
