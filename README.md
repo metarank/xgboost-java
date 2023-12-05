@@ -18,7 +18,7 @@ For maven, use the following snippet:
 <dependency>
   <groupId>io.github.metarank</groupId>
   <artifactId>xgboost-java</artifactId>
-  <version>1.7.1-1</version>
+  <version>2.0.2-1</version>
 </dependency>
 ```
 
